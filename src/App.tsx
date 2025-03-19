@@ -11,14 +11,31 @@ interface DamageRow {
 }
 
 function App() {
-  const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'];
+  const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'] as const;
+  type DiceType = typeof diceTypes[number];
+
+  const diceMaxValues: Record<DiceType, number> = {
+    d4: 4,
+    d6: 6,
+    d8: 8,
+    d10: 10,
+    d12: 12,
+    d20: 20,
+  };
+
   const [rows, setRows] = useState<DamageRow[]>([]);
   const [isAddingRow, setIsAddingRow] = useState(false);
   const [lastRollTime, setLastRollTime] = useState<string | null>(null);
-  const [newRow, setNewRow] = useState<Partial<DamageRow>>({
-    diceType: 'd6',
-    unitSize: 1,
-    bonus: 0
+  const [isAddRowOpen, setIsAddRowOpen] = useState(true);
+  const [newRow, setNewRow] = useState<Partial<DamageRow>>(() => {
+    const initialDiceType = 'd6' as DiceType;
+    const maxValue = diceMaxValues[initialDiceType];
+    const averageValue = Math.floor((maxValue + 1) / 2);
+    return {
+      diceType: initialDiceType,
+      unitSize: averageValue,
+      bonus: 0,
+    };
   });
 
   const handleAddRow = () => {
@@ -36,6 +53,7 @@ function App() {
         unitSize: 1,
         bonus: 0
       });
+      setIsAddRowOpen(false);
     }
   };
 
@@ -68,88 +86,132 @@ function App() {
     setRows(rows.filter(row => row.id !== id));
   };
 
-  return (
-    <div className="container">
-      <h1>Damage Calculator</h1>
-      
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Dice</th>
-              <th>Unit Size</th>
-              <th>Bonus</th>
-              <th>Roll Result</th>
-              <th>Damage</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(row => (
-              <tr key={row.id}>
-                <td>{row.diceType}</td>
-                <td>{row.unitSize}</td>
-                <td>{row.bonus}</td>
-                <td>{row.rollResult || '-'}</td>
-                <td>{row.damage || '-'}</td>
-                <td>
-                  <button 
-                    className="delete-button"
-                    onClick={() => handleDeleteRow(row.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const handleDiceTypeSelect = (type: DiceType) => {
+    const maxValue = diceMaxValues[type];
+    const averageValue = Math.floor((maxValue + 1) / 2); // Average of 1 to maxValue, rounded down
+    setNewRow(prev => ({ 
+      ...prev, 
+      diceType: type,
+      unitSize: averageValue
+    }));
+  };
 
-        {isAddingRow ? (
-          <div className="add-row-form">
-            <h3>Add New Row</h3>
-            <div className="form-group">
-              <label>Dice Type:</label>
-              <select
-                value={newRow.diceType}
-                onChange={(e) => setNewRow({ ...newRow, diceType: e.target.value })}
-              >
-                {diceTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mb-8">
+          <div className="space-y-4">
+            <div>
+              <div className="dice-selection-grid">
+                {diceTypes.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleDiceTypeSelect(type as DiceType)}
+                    className={`dice-button ${newRow.diceType === type ? 'selected' : ''}`}
+                  >
+                    <img
+                      src={`/src/static/${type}.png`}
+                      alt={type}
+                      className="dice-image"
+                    />
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
-            <div className="form-group">
-              <label>Unit Size:</label>
-              <input
-                type="number"
-                min="1"
-                value={newRow.unitSize}
-                onChange={(e) => setNewRow({ ...newRow, unitSize: parseInt(e.target.value) })}
-              />
+            <div>
+              <label className="block text-sm font-medium mb-2">Unit Size</label>
+              <div className="range-input-container">
+                <div className="range-ticks">
+                  {Array.from(
+                    { length: (newRow.diceType ? diceMaxValues[newRow.diceType as DiceType] : 6) - 1 + 1 },
+                    (_, i) => i + 1
+                  ).map((value) => (
+                    <div key={value} className="range-tick" style={{ left: `${(value - 1) / ((newRow.diceType ? diceMaxValues[newRow.diceType as DiceType] : 6) - 1) * 100}%` }}>
+                      <span className="range-tick-label">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max={newRow.diceType ? diceMaxValues[newRow.diceType as DiceType] : 6}
+                  value={newRow.unitSize}
+                  onChange={(e) =>
+                    setNewRow({ ...newRow, unitSize: Number(e.target.value) })
+                  }
+                  className="range-input"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Bonus:</label>
-              <input
-                type="number"
-                value={newRow.bonus}
-                onChange={(e) => setNewRow({ ...newRow, bonus: parseInt(e.target.value) })}
-                placeholder="Can be negative"
-              />
-            </div>
-            <div className="form-actions">
-              <button onClick={handleAddRow}>Add Row</button>
-              <button onClick={() => setIsAddingRow(false)}>Cancel</button>
+            <div>
+              <label className="block text-sm font-medium mb-2">Bonus</label>
+              <div className="range-input-container">
+                <div className="range-ticks">
+                  {Array.from(
+                    { length: 21 }, // -10 to 10
+                    (_, i) => i - 10
+                  ).map((value) => (
+                    <div key={value} className="range-tick" style={{ left: `${(value + 10) / 20 * 100}%` }}>
+                      <span className="range-tick-label">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                <input
+                  type="range"
+                  min="-10"
+                  max="10"
+                  value={newRow.bonus}
+                  onChange={(e) =>
+                    setNewRow({ ...newRow, bonus: Number(e.target.value) })
+                  }
+                  className="range-input"
+                />
+              </div>
             </div>
           </div>
-        ) : (
-          <button 
-            className="add-row-button"
-            onClick={() => setIsAddingRow(true)}
-          >
-            Add New Row
-          </button>
-        )}
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={handleAddRow}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Dice</th>
+                <th>Unit Size</th>
+                <th>Bonus</th>
+                <th>Roll Result</th>
+                <th>Damage</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => (
+                <tr key={row.id}>
+                  <td>{row.diceType}</td>
+                  <td>{row.unitSize}</td>
+                  <td>{row.bonus}</td>
+                  <td>{row.rollResult || '-'}</td>
+                  <td>{row.damage || '-'}</td>
+                  <td>
+                    <button 
+                      className="delete-button"
+                      onClick={() => handleDeleteRow(row.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {rows.length > 0 && (
           <div className="roll-section">

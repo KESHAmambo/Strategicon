@@ -1,7 +1,6 @@
 .container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -182,5 +181,136 @@ button:hover {
 
   .last-roll-time {
     color: #adb5bd;
+  }
+}
+
+.dice-selection-grid {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dice-button {
+  padding: 4px;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+  background-color: transparent;
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+}
+
+.dice-button.selected {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.dice-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.range-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.range-input-container label {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.range-ticks {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  right: 0;
+  height: 2px;
+  background: #d1d5db;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 97%;
+}
+
+.range-input {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  background: transparent;
+  border-radius: 3px;
+  outline: none;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  z-index: 2;
+}
+
+.range-value {
+  min-width: 3rem;
+  text-align: center;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.range-tick {
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: #9ca3af;
+  transform: translateX(-50%);
+  top: -3px;
+}
+
+.range-tick-label {
+  position: absolute;
+  transform: translateX(-50%);
+  top: 12px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .range-ticks {
+    background: #4b5563;
+  }
+
+  .range-tick {
+    background: #6b7280;
+  }
+
+  .range-tick-label {
+    color: #9ca3af;
+  }
+
+  .range-input::-webkit-slider-thumb {
+    background: #60a5fa;
+  }
+
+  .range-input::-webkit-slider-thumb:hover {
+    background: #3b82f6;
   }
 } 
