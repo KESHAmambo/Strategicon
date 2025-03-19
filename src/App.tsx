@@ -40,20 +40,23 @@ function App() {
 
   const handleAddRow = () => {
     if (newRow.diceType && newRow.unitSize && newRow.bonus !== undefined) {
-      const row: DamageRow = {
-        id: Date.now().toString(),
-        diceType: newRow.diceType,
-        unitSize: newRow.unitSize,
-        bonus: newRow.bonus
-      };
-      setRows([...rows, row]);
-      setIsAddingRow(false);
+      setRows([
+        ...rows,
+        {
+          id: Date.now().toString(),
+          diceType: newRow.diceType,
+          unitSize: newRow.unitSize,
+          bonus: newRow.bonus,
+          damage: 0,
+        },
+      ]);
+      const maxValue = diceMaxValues[newRow.diceType as DiceType];
+      const averageValue = Math.floor((maxValue + 1) / 2);
       setNewRow({
-        diceType: 'd6',
-        unitSize: 1,
-        bonus: 0
+        diceType: newRow.diceType,
+        unitSize: averageValue,
+        bonus: newRow.bonus,
       });
-      setIsAddRowOpen(false);
     }
   };
 
@@ -118,7 +121,7 @@ function App() {
                 ))}
               </div>
             </div>
-            <div>
+            <div className="slider-container">
               <label className="block text-sm font-medium mb-2">Unit Size</label>
               <div className="range-input-container">
                 <div className="range-ticks">
@@ -143,7 +146,7 @@ function App() {
                 />
               </div>
             </div>
-            <div>
+            <div className="slider-container">
               <label className="block text-sm font-medium mb-2">Bonus</label>
               <div className="range-input-container">
                 <div className="range-ticks">
@@ -169,12 +172,10 @@ function App() {
               </div>
             </div>
           </div>
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={handleAddRow}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Add
+          <div className="button-container">
+            <button onClick={handleAddRow}>
+              <img src="/src/static/join.png" alt="Join" />
+              Join battle!
             </button>
           </div>
         </div>
@@ -188,7 +189,7 @@ function App() {
                 <th>Bonus</th>
                 <th>Roll Result</th>
                 <th>Damage</th>
-                <th>Actions</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -204,7 +205,7 @@ function App() {
                       className="delete-button"
                       onClick={() => handleDeleteRow(row.id)}
                     >
-                      Delete
+                      <img src="/src/static/close.png" alt="Delete" />
                     </button>
                   </td>
                 </tr>
@@ -219,7 +220,8 @@ function App() {
               className="roll-button"
               onClick={handleRoll}
             >
-              Roll All
+              <img src="/src/static/battle.png" alt="Battle" />
+              Battle!
             </button>
             {lastRollTime && (
               <div className="last-roll-time">

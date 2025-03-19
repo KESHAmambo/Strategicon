@@ -90,11 +90,23 @@ button:hover {
 }
 
 .delete-button {
-  background-color: #e74c3c;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-button:hover {
-  background-color: #c0392b;
+  opacity: 0.8;
+}
+
+.delete-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .add-row-button {
@@ -110,19 +122,32 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
 }
 
 .roll-button {
-  background-color: #f1c40f;
-  color: #2c3e50;
-  font-weight: 600;
-  padding: 0.75rem 2rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .roll-button:hover {
-  background-color: #f39c12;
+  background-color: #b91c1c;
+}
+
+.roll-button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .last-roll-time {
@@ -216,6 +241,10 @@ button:hover {
   border-radius: 8px;
 }
 
+.slider-container {
+  margin-top: 2rem;
+}
+
 .range-input-container {
   display: flex;
   align-items: center;
@@ -234,13 +263,13 @@ button:hover {
 .range-ticks {
   position: absolute;
   top: 50%;
-  left: 8px;
+  left: 0;
   right: 0;
   height: 2px;
   background: #d1d5db;
   transform: translateY(-50%);
   pointer-events: none;
-  width: 97%;
+  width: 100%;
 }
 
 .range-input {
@@ -313,4 +342,32 @@ button:hover {
   .range-input::-webkit-slider-thumb:hover {
     background: #3b82f6;
   }
+}
+
+.button-container {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.button-container button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.button-container button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.button-container button:hover {
+  background-color: #2563eb;
 } 
