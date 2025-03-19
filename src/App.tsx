@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
+import { StartScreen } from './StartScreen'
 
 interface DamageRow {
   id: string;
@@ -8,6 +9,7 @@ interface DamageRow {
   bonus: number;
   rollResult?: number;
   damage?: number;
+  color: string;
 }
 
 function App() {
@@ -23,10 +25,11 @@ function App() {
     d20: 20,
   };
 
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [playerColors, setPlayerColors] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [rows, setRows] = useState<DamageRow[]>([]);
-  const [isAddingRow, setIsAddingRow] = useState(false);
   const [lastRollTime, setLastRollTime] = useState<string | null>(null);
-  const [isAddRowOpen, setIsAddRowOpen] = useState(true);
   const [newRow, setNewRow] = useState<Partial<DamageRow>>(() => {
     const initialDiceType = 'd6' as DiceType;
     const maxValue = diceMaxValues[initialDiceType];
@@ -38,8 +41,20 @@ function App() {
     };
   });
 
+  // Set first color as selected when playerColors changes
+  useEffect(() => {
+    if (playerColors.length > 0 && !selectedColor) {
+      setSelectedColor(playerColors[0]);
+    }
+  }, [playerColors]);
+
+  const handleStart = (colors: string[]) => {
+    setPlayerColors(colors);
+    setIsGameStarted(true);
+  };
+
   const handleAddRow = () => {
-    if (newRow.diceType && newRow.unitSize && newRow.bonus !== undefined) {
+    if (newRow.diceType && newRow.unitSize && newRow.bonus !== undefined && selectedColor) {
       setRows([
         ...rows,
         {
@@ -48,6 +63,7 @@ function App() {
           unitSize: newRow.unitSize,
           bonus: newRow.bonus,
           damage: 0,
+          color: selectedColor,
         },
       ]);
       const maxValue = diceMaxValues[newRow.diceType as DiceType];
@@ -99,9 +115,28 @@ function App() {
     }));
   };
 
+  if (!isGameStarted) {
+    return <StartScreen onStart={handleStart} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="container mx-auto px-4 py-8">
+        <div className="player-colors">
+          {playerColors.map((color, index) => (
+            <button
+              key={index}
+              className={`dice-button ${selectedColor === color ? 'selected' : ''}`}
+              aria-label={`Player ${index + 1}`}
+              onClick={() => setSelectedColor(color)}
+            >
+              <div 
+                className="color-indicator" 
+                style={{ backgroundColor: color }}
+              />
+            </button>
+          ))}
+        </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mb-8">
           <div className="space-y-4">
             <div>
@@ -112,11 +147,19 @@ function App() {
                     onClick={() => handleDiceTypeSelect(type as DiceType)}
                     className={`dice-button ${newRow.diceType === type ? 'selected' : ''}`}
                   >
-                    <img
-                      src={`/src/static/${type}.png`}
-                      alt={type}
-                      className="dice-image"
-                    />
+                    <div className="dice-image-container">
+                      <img
+                        src={`/src/static/${type}.png`}
+                        alt={type}
+                        className="dice-image"
+                      />
+                      {selectedColor && (
+                        <div 
+                          className="dice-overlay"
+                          style={{ backgroundColor: selectedColor }}
+                        />
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -196,11 +239,17 @@ function App() {
               {rows.map(row => (
                 <tr key={row.id}>
                   <td>
-                    <img 
-                      src={`/src/static/${row.diceType}.png`} 
-                      alt={row.diceType}
-                      className="table-dice-image"
-                    />
+                    <div className="dice-image-container">
+                      <img 
+                        src={`/src/static/${row.diceType}.png`} 
+                        alt={row.diceType}
+                        className="table-dice-image"
+                      />
+                      <div 
+                        className="dice-overlay"
+                        style={{ backgroundColor: row.color }}
+                      />
+                    </div>
                   </td>
                   <td>{row.unitSize}</td>
                   <td>{row.bonus}</td>

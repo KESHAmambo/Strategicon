@@ -223,25 +223,46 @@ button:hover {
   padding: 4px;
   border-radius: 8px;
   border: 2px solid #d1d5db;
-  background-color: transparent;
+  background-color: white;
   cursor: pointer;
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1;
+  max-width: 80px;
+  transition: all 0.2s;
+}
+
+.dice-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.color-indicator {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
 }
 
 .dice-button.selected {
   border-color: #3b82f6;
-  background-color: #eff6ff;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px #eff6ff;
 }
 
-.dice-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
+@media (prefers-color-scheme: dark) {
+  .dice-button {
+    border-color: #374151;
+    background-color: white;
+  }
+  
+  .dice-button.selected {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px #1e40af;
+  }
 }
 
 .slider-container {
@@ -382,6 +403,8 @@ button:hover {
   display: block;
   margin: 0;
   border-radius: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 td:first-child {
@@ -401,4 +424,60 @@ td:first-child {
   .roll-result-cell[data-value] {
     background-color: var(--intensity-color-dark);
   }
+}
+
+.player-colors {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.player-color-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.player-color-button:hover {
+  transform: scale(1.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .player-color-button {
+    border-color: #374151;
+  }
+}
+
+.dice-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.dice-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.dice-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 4px;
+  opacity: 0.3;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: darken;
 } 
