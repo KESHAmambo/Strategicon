@@ -195,11 +195,35 @@ function App() {
             <tbody>
               {rows.map(row => (
                 <tr key={row.id}>
-                  <td>{row.diceType}</td>
+                  <td>
+                    <img 
+                      src={`/src/static/${row.diceType}.png`} 
+                      alt={row.diceType}
+                      className="table-dice-image"
+                    />
+                  </td>
                   <td>{row.unitSize}</td>
                   <td>{row.bonus}</td>
-                  <td>{row.rollResult || '-'}</td>
-                  <td>{row.damage || '-'}</td>
+                  <td 
+                    className="roll-result-cell"
+                    style={row.rollResult ? {
+                      '--intensity-color': `rgba(34, 197, 94, ${Math.min(row.rollResult / (diceMaxValues[row.diceType as DiceType] * 2), 0.5)})`,
+                      '--intensity-color-dark': `rgba(34, 197, 94, ${Math.min(row.rollResult / (diceMaxValues[row.diceType as DiceType] * 2), 0.3)})`
+                    } as React.CSSProperties : undefined}
+                    data-value={row.rollResult}
+                  >
+                    {row.rollResult || '-'}
+                  </td>
+                  <td 
+                    className="roll-result-cell"
+                    style={row.damage !== undefined ? {
+                      '--intensity-color': `rgba(34, 197, 94, ${Math.min(row.damage / (diceMaxValues[row.diceType as DiceType] * 2), 0.5)})`,
+                      '--intensity-color-dark': `rgba(34, 197, 94, ${Math.min(row.damage / (diceMaxValues[row.diceType as DiceType] * 2), 0.3)})`
+                    } as React.CSSProperties : undefined}
+                    data-value={row.damage}
+                  >
+                    {row.damage === 0 ? '0' : row.damage || '-'}
+                  </td>
                   <td>
                     <button 
                       className="delete-button"

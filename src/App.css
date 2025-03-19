@@ -11,7 +11,6 @@ h1 {
 
 .table-container {
   background-color: #f8f9fa;
-  border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -19,14 +18,19 @@ h1 {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1.5rem;
   background-color: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 th, td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #dee2e6;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 th {
@@ -123,7 +127,6 @@ button:hover {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
   width: 100%;
 }
 
@@ -132,7 +135,7 @@ button:hover {
   padding: 0.5rem 1rem;
   background-color: #dc2626;
   color: white;
-  border-radius: 0.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
   transition: background-color 0.2s;
   display: flex;
   align-items: center;
@@ -354,7 +357,7 @@ button:hover {
   padding: 0.5rem 1rem;
   background-color: #3b82f6;
   color: white;
-  border-radius: 0.5rem;
+  border-radius: 0.5rem 0.5rem 0 0;
   transition: background-color 0.2s;
   display: flex;
   align-items: center;
@@ -370,4 +373,32 @@ button:hover {
 
 .button-container button:hover {
   background-color: #2563eb;
+}
+
+.table-dice-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  border-radius: 4px;
+}
+
+td:first-child {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.roll-result-cell {
+  transition: background-color 0.3s;
+}
+
+.roll-result-cell[data-value] {
+  background-color: var(--intensity-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .roll-result-cell[data-value] {
+    background-color: var(--intensity-color-dark);
+  }
 } 
