@@ -1,0 +1,1 @@
+lets make changes to battle button: when pressed it must not save result to history, but instead: save current time, disable itself, switch button 'join battle' to state 'new battle'. If 'new battle' button is pressed it must save table to history with previously saved time, then clear battle table, undisable battle button and switch back to 'join battle' state.

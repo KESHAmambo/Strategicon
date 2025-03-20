@@ -1,0 +1,15 @@
+.battle-history {
+    margin-top: 3rem;
+}
+
+.history-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.scroll-icon {
+    margin-top: 3px;
+}
+
