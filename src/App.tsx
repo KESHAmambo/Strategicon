@@ -89,7 +89,7 @@ function App() {
       // Log the formula with actual values
       console.log(`Damage calculation for ${row.diceType}:`);
       console.log(`N (Unit Size) = ${row.unitSize}`);
-      console.log(`R (Roll Result) = ${roll}`);
+      console.log(`R (Roll) = ${roll}`);
       console.log(`M (Max Dice Value) = ${diceMax}`);
       console.log(`Formula: Math.floor(${row.unitSize} * (1 + (${roll} - ${diceMax}) / (${roll} + ${diceMax} - 2 + ${row.unitSize}/2)))`);
       console.log(`Result: ${damage}`);
@@ -165,7 +165,10 @@ function App() {
               </div>
             </div>
             <div className="slider-container">
-              <label className="block text-sm font-medium mb-2">Unit Size</label>
+              <label>
+                <img src="/src/static/unit_size.png" alt="Unit Size" className="slider-icon" />
+                Unit Size
+              </label>
               <div className="range-input-container">
                 <div className="range-ticks">
                   {Array.from(
@@ -186,11 +189,15 @@ function App() {
                     setNewRow({ ...newRow, unitSize: Number(e.target.value) })
                   }
                   className="range-input"
+                  style={{ '--thumb-color': selectedColor || '#b91c1c' } as React.CSSProperties}
                 />
               </div>
             </div>
             <div className="slider-container">
-              <label className="block text-sm font-medium mb-2">Bonus</label>
+              <label>
+                <img src="/src/static/bonus.png" alt="Bonus" className="slider-icon" />
+                Bonus
+              </label>
               <div className="range-input-container">
                 <div className="range-ticks">
                   {Array.from(
@@ -211,14 +218,20 @@ function App() {
                     setNewRow({ ...newRow, bonus: Number(e.target.value) })
                   }
                   className="range-input"
+                  style={{ '--thumb-color': selectedColor || '#b91c1c' } as React.CSSProperties}
                 />
               </div>
             </div>
           </div>
           <div className="button-container">
-            <button onClick={handleAddRow}>
+            <button
+              className="add-row-button"
+              onClick={handleAddRow}
+              disabled={!newRow.diceType || !selectedColor}
+              style={{ backgroundColor: selectedColor || '#d1d5db' }}
+            >
               <img src="/src/static/join.png" alt="Join" />
-              Join battle!
+              Join Battle
             </button>
           </div>
         </div>
@@ -230,7 +243,7 @@ function App() {
                 <th>Dice</th>
                 <th>Unit Size</th>
                 <th>Bonus</th>
-                <th>Roll Result</th>
+                <th>Roll</th>
                 <th>Damage</th>
                 <th></th>
               </tr>
@@ -298,7 +311,7 @@ function App() {
             </button>
             {lastRollTime && (
               <div className="last-roll-time">
-                Last roll: {lastRollTime}
+                Last battle: {lastRollTime}
               </div>
             )}
           </div>

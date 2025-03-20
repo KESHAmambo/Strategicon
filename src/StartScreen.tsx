@@ -6,13 +6,16 @@ interface StartScreenProps {
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
-  const [colors, setColors] = useState<string[]>(['#ff0000', '#0000ff']);
+  const [players, setPlayers] = useState([
+    { color: '#1c6eff' },
+    { color: '#139c00' }
+  ]);
   const [error, setError] = useState<string>('');
 
   const handleColorChange = (index: number, color: string) => {
-    const newColors = [...colors];
+    const newColors = [...players.map(p => p.color)];
     newColors[index] = color;
-    setColors(newColors);
+    setPlayers(players.map((p, i) => ({ ...p, color: newColors[i] })));
     validateColors(newColors);
   };
 
@@ -26,30 +29,30 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   };
 
   const handleAddPlayer = () => {
-    setColors([...colors, '#000000']);
+    setPlayers([...players, { color: '#dc2626' }]);
   };
 
   const handleRemovePlayer = (index: number) => {
-    if (colors.length <= 2) {
+    if (players.length <= 2) {
       setError('Minimum 2 players required');
       return;
     }
-    const newColors = colors.filter((_, i) => i !== index);
-    setColors(newColors);
+    const newColors = players.map(p => p.color).filter((_, i) => i !== index);
+    setPlayers(players.map((p, i) => ({ ...p, color: newColors[i] })));
     validateColors(newColors);
   };
 
   const handleStart = () => {
-    if (colors.length < 2) {
+    if (players.length < 2) {
       setError('Minimum 2 players required');
       return;
     }
-    const uniqueColors = new Set(colors);
-    if (uniqueColors.size !== colors.length) {
+    const uniqueColors = new Set(players.map(p => p.color));
+    if (uniqueColors.size !== players.length) {
       setError('All players must have different colors');
       return;
     }
-    onStart(colors);
+    onStart(players.map(p => p.color));
   };
 
   return (
@@ -66,11 +69,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
             </button>
           </div>
           <div className="color-pickers">
-            {colors.map((color, index) => (
+            {players.map((player, index) => (
               <div key={index} className="color-picker">
                 <label>
                   Player {index + 1}
-                  {colors.length > 2 && (
+                  {players.length > 2 && (
                     <button 
                       className="remove-player-button"
                       onClick={() => handleRemovePlayer(index)}
@@ -81,12 +84,12 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
                 </label>
                 <input
                   type="color"
-                  value={color}
+                  value={player.color}
                   onChange={(e) => handleColorChange(index, e.target.value)}
                 />
                 <div 
                   className="color-preview" 
-                  style={{ backgroundColor: color }}
+                  style={{ backgroundColor: player.color }}
                 />
               </div>
             ))}
@@ -98,7 +101,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
           onClick={handleStart}
         >
           <img src="/src/static/hexagon.png" alt="Start" />
-          Start Strategicon
+          Start Strategicon!
         </button>
       </div>
     </div>
