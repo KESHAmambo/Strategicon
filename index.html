@@ -2,13 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/Strategicon/assets/Strategicon_title-CCUGOybo.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Strategicon - A dice battle game" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
     <title>Strategicon</title>
-    <script type="module" crossorigin src="/Strategicon/assets/index-CtQ0zGXc.js"></script>
-    <link rel="stylesheet" crossorigin href="/Strategicon/assets/index-CWoUwrh6.css">
+    <script type="module" crossorigin src="/assets/index-8QaIGot6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CWoUwrh6.css">
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
