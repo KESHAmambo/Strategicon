@@ -80,19 +80,53 @@ function App() {
     const updatedRows = rows.map(row => {
       const diceMax = parseInt(row.diceType.substring(1));
       const roll = Math.floor(Math.random() * diceMax) + 1;
+      const rawTotal = roll + row.bonus;
       
-      // Calculate damage
-      const damage = Math.floor(
-        row.unitSize * (1 + (roll - diceMax) / (roll + diceMax - 2 + row.unitSize/2))
+      // Handle bonus overflow and underflow
+      let totalRoll = rawTotal;
+      let bonusOverflow = 0;
+      
+      if (rawTotal > diceMax) {
+        totalRoll = diceMax;
+        bonusOverflow = rawTotal - diceMax;
+      } else if (rawTotal < 1) {
+        totalRoll = 1;
+        bonusOverflow = rawTotal - 1; // This will be negative
+      }
+
+      // Calculate base damage
+      const baseDamage = Math.floor(
+        row.unitSize * (1 + (totalRoll - diceMax) / (totalRoll + diceMax - 2 + row.unitSize/2))
       );
 
-      // Log the formula with actual values
+      // Add bonus overflow to damage
+      const damageWithBonus = baseDamage + bonusOverflow;
+
+      // Determine maximum damage based on dice type
+      let maxDamage = row.unitSize;
+      if (row.diceType === 'd6') {
+        maxDamage = row.unitSize + 1;
+      } else if (row.diceType === 'd8' || row.diceType === 'd10') {
+        maxDamage = row.unitSize + 2;
+      } else if (row.diceType === 'd12' || row.diceType === 'd20') {
+        maxDamage = row.unitSize + 3;
+      }
+
+      // Clamp final damage between 0 and maxDamage
+      const damage = Math.max(0, Math.min(damageWithBonus, maxDamage));
+
+      // Log the calculation steps
       console.log(`Damage calculation for ${row.diceType}:`);
       console.log(`N (Unit Size) = ${row.unitSize}`);
       console.log(`R (Roll) = ${roll}`);
-      console.log(`M (Max Dice Value) = ${diceMax}`);
-      console.log(`Formula: Math.floor(${row.unitSize} * (1 + (${roll} - ${diceMax}) / (${roll} + ${diceMax} - 2 + ${row.unitSize}/2)))`);
-      console.log(`Result: ${damage}`);
+      console.log(`Bonus = ${row.bonus}`);
+      console.log(`Raw Total = ${rawTotal}`);
+      console.log(`Total Roll (capped/minimum) = ${totalRoll}`);
+      console.log(`Bonus Overflow/Underflow = ${bonusOverflow}`);
+      console.log(`Base Damage = ${baseDamage}`);
+      console.log(`Damage with Bonus = ${damageWithBonus}`);
+      console.log(`Max Damage = ${maxDamage}`);
+      console.log(`Final Damage = ${damage}`);
       console.log('-------------------');
 
       return { ...row, rollResult: roll, damage };
@@ -279,8 +313,8 @@ function App() {
                   <td 
                     className="roll-result-cell"
                     style={row.damage !== undefined ? {
-                      '--intensity-color': `${row.color}${Math.floor((row.damage / (diceMaxValues[row.diceType as DiceType])) * 255).toString(16).padStart(2, '0')}`,
-                      '--intensity-color-dark': `${row.color}${Math.floor((row.damage / (diceMaxValues[row.diceType as DiceType])) * 200).toString(16).padStart(2, '0')}`
+                      '--intensity-color': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'ff' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 255).toString(16).padStart(2, '0')}`,
+                      '--intensity-color-dark': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'cc' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 200).toString(16).padStart(2, '0')}`
                     } as React.CSSProperties : undefined}
                     data-value={row.damage}
                   >
