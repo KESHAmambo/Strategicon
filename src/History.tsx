@@ -1,6 +1,6 @@
 import React from 'react';
 import './History.css';
-import { DamageRow, HistoryEntry } from './types';
+import { HistoryEntry } from './types';
 
 interface HistoryProps {
   history: HistoryEntry[];
@@ -19,7 +19,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
         <img src="/src/static/scroll.png" alt="History" className="slider-icon scroll-icon" />
         Battle History
       </h2>
-      {history.map((entry, index) => (
+      {history.map((entry) => (
         <div key={entry.date} className="history-entry">
           <div className="history-entry-date">
             {entry.date}
