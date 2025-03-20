@@ -446,15 +446,12 @@ td:first-child {
 }
 
 .roll-result-cell {
-  transition: background-color 0.3s;
-}
-
-.roll-result-cell[data-value] {
   background-color: var(--intensity-color);
+  font-weight: 700;
 }
 
 @media (prefers-color-scheme: dark) {
-  .roll-result-cell[data-value] {
+  .roll-result-cell {
     background-color: var(--intensity-color-dark);
   }
 }

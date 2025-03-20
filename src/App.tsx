@@ -269,8 +269,8 @@ function App() {
                   <td 
                     className="roll-result-cell"
                     style={row.rollResult ? {
-                      '--intensity-color': `rgba(34, 197, 94, ${Math.min(row.rollResult / (diceMaxValues[row.diceType as DiceType] * 2), 0.5)})`,
-                      '--intensity-color-dark': `rgba(34, 197, 94, ${Math.min(row.rollResult / (diceMaxValues[row.diceType as DiceType] * 2), 0.3)})`
+                      '--intensity-color': `${row.color}${Math.floor((row.rollResult / diceMaxValues[row.diceType as DiceType]) * 255).toString(16).padStart(2, '0')}`,
+                      '--intensity-color-dark': `${row.color}${Math.floor((row.rollResult / diceMaxValues[row.diceType as DiceType]) * 200).toString(16).padStart(2, '0')}`
                     } as React.CSSProperties : undefined}
                     data-value={row.rollResult}
                   >
@@ -279,8 +279,8 @@ function App() {
                   <td 
                     className="roll-result-cell"
                     style={row.damage !== undefined ? {
-                      '--intensity-color': `rgba(34, 197, 94, ${Math.min(row.damage / (diceMaxValues[row.diceType as DiceType] * 2), 0.5)})`,
-                      '--intensity-color-dark': `rgba(34, 197, 94, ${Math.min(row.damage / (diceMaxValues[row.diceType as DiceType] * 2), 0.3)})`
+                      '--intensity-color': `${row.color}${Math.floor((row.damage / (diceMaxValues[row.diceType as DiceType])) * 255).toString(16).padStart(2, '0')}`,
+                      '--intensity-color-dark': `${row.color}${Math.floor((row.damage / (diceMaxValues[row.diceType as DiceType])) * 200).toString(16).padStart(2, '0')}`
                     } as React.CSSProperties : undefined}
                     data-value={row.damage}
                   >
