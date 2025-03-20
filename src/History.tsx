@@ -1,6 +1,7 @@
 import React from 'react';
 import './History.css';
 import { HistoryEntry } from './types';
+import { images } from './assets';
 
 interface HistoryProps {
   history: HistoryEntry[];
@@ -15,8 +16,8 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
 
   return (
     <div className="battle-history">
-      <h2 className='history-title'>
-        <img src="/src/static/scroll.png" alt="History" className="slider-icon scroll-icon" />
+      <h2 className='section-title'>
+        <img src={images.scroll} alt="History" className="slider-icon scroll-icon" />
         Battle History
       </h2>
       {history.map((entry) => (
@@ -45,7 +46,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
                     ) : (
                       <div className="dice-image-container">
                         <img 
-                          src={`/src/static/${row.diceType}.png`} 
+                          src={images[row.diceType as keyof typeof images]} 
                           alt={row.diceType}
                           className="table-dice-image"
                         />

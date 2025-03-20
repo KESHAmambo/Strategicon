@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { StartScreen } from './StartScreen'
 import { History } from './History'
+import { TotalStats } from './TotalStats'
 import { DamageRow, HistoryEntry } from './types'
+import { images } from './assets'
 
 function App() {
   const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'] as const;
@@ -222,7 +224,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="in-root-container min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="player-colors">
           {playerColors.map((color, index) => (
@@ -251,7 +253,7 @@ function App() {
                   >
                     <div className="dice-image-container">
                       <img
-                        src={`/src/static/${type}.png`}
+                        src={images[type]}
                         alt={type}
                         className="dice-image"
                       />
@@ -268,7 +270,7 @@ function App() {
             </div>
             <div className="slider-container">
               <label>
-                <img src="/src/static/unit_size.png" alt="Unit Size" className="slider-icon" />
+                <img src={images.unit_size} alt="Unit Size" className="slider-icon" />
                 Unit Size
               </label>
               <div className="range-input-container">
@@ -297,24 +299,24 @@ function App() {
             </div>
             <div className="slider-container">
               <label>
-                <img src="/src/static/bonus.png" alt="Bonus" className="slider-icon" />
+                <img src={images.bonus} alt="Bonus" className="slider-icon" />
                 Bonus
               </label>
               <div className="range-input-container">
                 <div className="range-ticks">
                   {Array.from(
-                    { length: 21 }, // -10 to 10
-                    (_, i) => i - 10
+                    { length: 17 }, // -10 to 10
+                    (_, i) => i - 5
                   ).map((value) => (
-                    <div key={value} className="range-tick" style={{ left: `${(value + 10) / 20 * 100}%` }}>
+                    <div key={value} className="range-tick" style={{ left: `${(value + 5) / 16 * 100}%` }}>
                       <span className="range-tick-label">{value}</span>
                     </div>
                   ))}
                 </div>
                 <input
                   type="range"
-                  min="-10"
-                  max="10"
+                  min="-5"
+                  max="11"
                   value={newRow.bonus}
                   onChange={(e) =>
                     setNewRow({ ...newRow, bonus: Number(e.target.value) })
@@ -333,7 +335,7 @@ function App() {
               style={{ backgroundColor: selectedColor || '#d1d5db' }}
             >
               <img 
-                src={isBattleStarted || rows.length === 0 ? "/src/static/new_battle.png" : "/src/static/join.png"} 
+                src={isBattleStarted || rows.length === 0 ? images.new_battle : images.join} 
                 alt={isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"} 
               />
               {isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"}
@@ -364,7 +366,7 @@ function App() {
                     ) : (
                       <div className="dice-image-container">
                         <img 
-                          src={`/src/static/${row.diceType}.png`} 
+                          src={images[row.diceType as keyof typeof images]} 
                           alt={row.diceType}
                           className="table-dice-image"
                         />
@@ -409,7 +411,7 @@ function App() {
                             className="reroll-button"
                             onClick={() => handleReroll(row)}
                           >
-                            <img src="/src/static/reroll.png" alt="Reroll" />
+                            <img src={images.reroll} alt="Reroll" />
                           </button>
                         )}
                         {!isBattleStarted && (
@@ -417,7 +419,7 @@ function App() {
                             className="delete-button"
                             onClick={() => handleDeleteRow(row.id)}
                           >
-                            <img src="/src/static/close.png" alt="Delete" />
+                            <img src={images.close} alt="Delete" />
                           </button>
                         )}
                       </div>
@@ -436,13 +438,14 @@ function App() {
               onClick={handleRoll}
               disabled={isBattleStarted || rows.every(row => row.color === rows[0].color)}
             >
-              <img src="/src/static/battle.png" alt="Battle" />
+              <img src={images.battle} alt="Battle" />
               Battle!
             </button>
           </div>
         )}
 
         <History history={battleHistory} diceMaxValues={diceMaxValues} />
+        <TotalStats history={battleHistory} playerColors={playerColors} />
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { images } from './assets';
 import './StartScreen.css';
 
 interface StartScreenProps {
@@ -37,9 +38,8 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
       setError('Minimum 2 players required');
       return;
     }
-    const newColors = players.map(p => p.color).filter((_, i) => i !== index);
-    setPlayers(players.map((p, i) => ({ ...p, color: newColors[i] })));
-    validateColors(newColors);
+    setPlayers(players.filter((_, i) => i !== index));
+    validateColors(players.filter((_, i) => i !== index).map(p => p.color));
   };
 
   const handleStart = () => {
@@ -56,7 +56,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   };
 
   return (
-    <div className="start-screen">
+    <div className="start-screen in-root-container">
       <div className="start-screen-content">
         <div className="color-picker-section">
           <div className="section-header">
@@ -65,7 +65,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
               className="add-player-button"
               onClick={handleAddPlayer}
             >
-              <img src="/src/static/user.png" alt="Add Player" />
+              <img src={images.user} alt="Add Player" />
             </button>
           </div>
           <div className="color-pickers">
@@ -100,7 +100,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
           className="start-button"
           onClick={handleStart}
         >
-          <img src="/src/static/hexagon.png" alt="Start" />
+          <img src={images.hexagon} alt="Start" />
           Start Strategicon!
         </button>
       </div>

@@ -1,3 +1,8 @@
+.in-root-container {
+  padding: 2rem;
+  max-width: 600px;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;
@@ -11,20 +16,21 @@ h1 {
 
 .table-container {
   background-color: #f8f9fa;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background-color: white;
-  border-radius: 0.5rem;
   overflow: hidden;
 }
 
+.battle-history table, .total-stats table {
+  border-radius: 0.5rem;
+}
+
 th, td {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: left;
   border-bottom: 1px solid #dee2e6;
 }
@@ -37,6 +43,7 @@ th {
   background-color: #e9ecef;
   font-weight: 600;
   color: #2c3e50;
+  font-size: 0.75rem;
 }
 
 tr:hover {
@@ -456,7 +463,6 @@ td:first-child {
 
 .roll-result-cell {
   font-weight: normal;
-  text-align: center;
   padding: 0.5rem;
   background-color: var(--intensity-color);
   transition: all 0.2s ease;
@@ -597,4 +603,12 @@ table .dice-overlay {
   font-size: 0.9em;
   color: #666;
   text-align: center;
-} 
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 0;
+}
