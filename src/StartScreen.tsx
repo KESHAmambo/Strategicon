@@ -56,7 +56,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   };
 
   return (
-    <div className="start-screen">
+    <div className="start-screen in-root-container">
       <div className="start-screen-content">
         <div className="color-picker-section">
           <div className="section-header">
