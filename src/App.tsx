@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { StartScreen } from './StartScreen'
 import { History } from './History'
+import { TotalStats } from './TotalStats'
 import { DamageRow, HistoryEntry } from './types'
 import { images } from './assets'
 
@@ -444,6 +445,7 @@ function App() {
         )}
 
         <History history={battleHistory} diceMaxValues={diceMaxValues} />
+        <TotalStats history={battleHistory} playerColors={playerColors} />
       </div>
     </div>
   )

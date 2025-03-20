@@ -16,7 +16,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
 
   return (
     <div className="battle-history">
-      <h2 className='history-title'>
+      <h2 className='section-title'>
         <img src={images.scroll} alt="History" className="slider-icon scroll-icon" />
         Battle History
       </h2>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { images } from './assets';
 import './StartScreen.css';
 
@@ -12,10 +12,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
     { color: '#139c00' }
   ]);
   const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    document.documentElement.style.setProperty('--background-image', `url(${images.background})`);
-  }, []);
 
   const handleColorChange = (index: number, color: string) => {
     const newColors = [...players.map(p => p.color)];
