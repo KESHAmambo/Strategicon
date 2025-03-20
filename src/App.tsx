@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import { StartScreen } from './StartScreen'
-
-interface DamageRow {
-  id: string;
-  diceType: string;
-  unitSize: number;
-  bonus: number;
-  rollResult?: number;
-  damage?: number;
-  color: string;
-}
+import { History } from './History'
+import { DamageRow, HistoryEntry } from './types'
 
 function App() {
   const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'] as const;
@@ -40,6 +32,7 @@ function App() {
       bonus: 0,
     };
   });
+  const [battleHistory, setBattleHistory] = useState<HistoryEntry[]>([]);
 
   // Set first color as selected when playerColors changes
   useEffect(() => {
@@ -81,7 +74,6 @@ function App() {
       const roll = Math.floor(Math.random() * diceMax) + 1;
       const rawTotal = roll + row.bonus;
       
-      // Handle bonus overflow and underflow
       let totalRoll = rawTotal;
       let bonusOverflow = 0;
       
@@ -90,18 +82,15 @@ function App() {
         bonusOverflow = rawTotal - diceMax;
       } else if (rawTotal < 1) {
         totalRoll = 1;
-        bonusOverflow = rawTotal - 1; // This will be negative
+        bonusOverflow = rawTotal - 1;
       }
 
-      // Calculate base damage
       const baseDamage = Math.floor(
         row.unitSize * (1 + (totalRoll - diceMax) / (totalRoll + diceMax - 2 + row.unitSize/2))
       );
 
-      // Add bonus overflow to damage
       const damageWithBonus = baseDamage + bonusOverflow;
 
-      // Determine maximum damage based on dice type
       let maxDamage = row.unitSize;
       if (row.diceType === 'd6') {
         maxDamage = row.unitSize + 1;
@@ -111,25 +100,17 @@ function App() {
         maxDamage = row.unitSize + 3;
       }
 
-      // Clamp final damage between 0 and maxDamage
       const damage = Math.max(0, Math.min(damageWithBonus, maxDamage));
-
-      // Log the calculation steps
-      console.log(`Damage calculation for ${row.diceType}:`);
-      console.log(`N (Unit Size) = ${row.unitSize}`);
-      console.log(`R (Roll) = ${roll}`);
-      console.log(`Bonus = ${row.bonus}`);
-      console.log(`Raw Total = ${rawTotal}`);
-      console.log(`Total Roll (capped/minimum) = ${totalRoll}`);
-      console.log(`Bonus Overflow/Underflow = ${bonusOverflow}`);
-      console.log(`Base Damage = ${baseDamage}`);
-      console.log(`Damage with Bonus = ${damageWithBonus}`);
-      console.log(`Max Damage = ${maxDamage}`);
-      console.log(`Final Damage = ${damage}`);
-      console.log('-------------------');
 
       return { ...row, rollResult: roll, damage };
     });
+
+    // Add current result to history
+    setBattleHistory(prev => [{
+      date: new Date().toLocaleString(),
+      rows: updatedRows
+    }, ...prev]);
+
     setRows(updatedRows);
     setLastRollTime(new Date().toLocaleString());
   };
@@ -153,7 +134,6 @@ function App() {
     const roll = Math.floor(Math.random() * diceMax) + 1;
     const rawTotal = roll + row.bonus;
     
-    // Handle bonus overflow and underflow
     let totalRoll = rawTotal;
     let bonusOverflow = 0;
     
@@ -182,9 +162,17 @@ function App() {
 
     const damage = Math.max(0, Math.min(damageWithBonus, maxDamage));
 
+    const updatedRow = { ...row, rollResult: roll, damage };
+
+    // Add single row reroll to history
+    setBattleHistory(prev => [{
+      date: `${new Date().toLocaleString()} (Reroll)`,
+      rows: [updatedRow]
+    }, ...prev]);
+
     setRows(rows.map(r => 
       r.id === row.id 
-        ? { ...r, rollResult: roll, damage }
+        ? updatedRow
         : r
     ));
     setLastRollTime(new Date().toLocaleString());
@@ -392,13 +380,10 @@ function App() {
               <img src="/src/static/battle.png" alt="Battle" />
               Battle!
             </button>
-            {lastRollTime && (
-              <div className="last-roll-time">
-                Last battle: {lastRollTime}
-              </div>
-            )}
           </div>
         )}
+
+        <History history={battleHistory} diceMaxValues={diceMaxValues} />
       </div>
     </div>
   )
