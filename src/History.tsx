@@ -32,7 +32,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
             </thead>
             <tbody>
               {entry.rows.map(row => (
-                <tr key={row.id}>
+                <tr key={row.id} className={row.isReroll ? 'rerolled-row' : ''}>
                   <td>
                     {row.isReroll ? (
                       <div className="dice-image-container">

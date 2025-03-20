@@ -18,6 +18,9 @@ function App() {
   };
 
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isPlayerJoined, setIsPlayerJoined] = useState(false);
+  const [isBattleStarted, setIsBattleStarted] = useState(false);
+  const [battleTime, setBattleTime] = useState<string | null>(null);
   const [playerColors, setPlayerColors] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [rows, setRows] = useState<DamageRow[]>([]);
@@ -48,16 +51,38 @@ function App() {
 
   const handleAddRow = () => {
     if (newRow.diceType && newRow.unitSize && newRow.bonus !== undefined && selectedColor) {
-      setRows([
-        ...rows,
-        {
+      // If in "New Battle" state and table is not empty, save to history and reset
+      if (isBattleStarted && rows.length > 0) {
+        // Save current results to history
+        setBattleHistory(prev => [{
+          date: battleTime || new Date().toLocaleString(),
+          rows: rows
+        }, ...prev]);
+        
+        // Reset table and add new row
+        setRows([{
           id: Date.now().toString(),
           diceType: newRow.diceType,
           unitSize: newRow.unitSize,
           bonus: newRow.bonus,
           color: selectedColor,
-        },
-      ]);
+        }]);
+        setIsBattleStarted(false);
+        setBattleTime(null);
+      } else {
+        // Normal add row behavior
+        setRows([
+          ...rows,
+          {
+            id: Date.now().toString(),
+            diceType: newRow.diceType,
+            unitSize: newRow.unitSize,
+            bonus: newRow.bonus,
+            color: selectedColor,
+          },
+        ]);
+      }
+
       const maxValue = diceMaxValues[newRow.diceType as DiceType];
       const averageValue = Math.floor((maxValue + 1) / 2);
       setNewRow({
@@ -69,6 +94,8 @@ function App() {
   };
 
   const handleRoll = () => {
+    setIsBattleStarted(true);
+    setBattleTime(new Date().toLocaleString());
     const updatedRows = rows.map(row => {
       const diceMax = parseInt(row.diceType.substring(1));
       const roll = Math.floor(Math.random() * diceMax) + 1;
@@ -105,14 +132,7 @@ function App() {
       return { ...row, rollResult: roll, damage };
     });
 
-    // Add current result to history
-    setBattleHistory(prev => [{
-      date: new Date().toLocaleString(),
-      rows: updatedRows
-    }, ...prev]);
-
     setRows(updatedRows);
-    setLastRollTime(new Date().toLocaleString());
   };
 
   const handleDeleteRow = (id: string) => {
@@ -130,6 +150,7 @@ function App() {
   };
 
   const handleReroll = (row: DamageRow) => {
+    setBattleTime(new Date().toLocaleString());
     const diceMax = parseInt(row.diceType.substring(1));
     const roll = Math.floor(Math.random() * diceMax) + 1;
     const rawTotal = roll + row.bonus;
@@ -316,13 +337,16 @@ function App() {
           </div>
           <div className="button-container">
             <button
-              className="add-row-button"
+              className="add-dice-button"
               onClick={handleAddRow}
               disabled={!newRow.diceType || !selectedColor}
               style={{ backgroundColor: selectedColor || '#d1d5db' }}
             >
-              <img src="/src/static/join.png" alt="Join" />
-              Join Battle
+              <img 
+                src={isBattleStarted || rows.length === 0 ? "/src/static/new_battle.png" : "/src/static/join.png"} 
+                alt={isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"} 
+              />
+              {isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"}
             </button>
           </div>
         </div>
@@ -341,7 +365,7 @@ function App() {
             </thead>
             <tbody>
               {rows.map(row => (
-                <tr key={row.id} className={row.isReroll ? 'reroll-row' : ''}>
+                <tr key={row.id} className={row.isReroll ? 'rerolled-row' : ''}>
                   <td>
                     {row.isReroll ? (
                       <div className="dice-image-container">
@@ -361,8 +385,8 @@ function App() {
                       </div>
                     )}
                   </td>
-                  <td>{row.isReroll ? '' : row.unitSize}</td>
-                  <td>{row.isReroll ? '' : row.bonus}</td>
+                  <td>{row.isReroll ? '-' : row.unitSize}</td>
+                  <td>{row.isReroll ? '-' : row.bonus}</td>
                   <td 
                     className="roll-result-cell"
                     style={row.rollResult ? {
@@ -390,18 +414,22 @@ function App() {
                       </div>
                     ) : (
                       <div className="action-buttons">
-                        <button 
-                          className="reroll-button"
-                          onClick={() => handleReroll(row)}
-                        >
-                          <img src="/src/static/reroll.png" alt="Reroll" />
-                        </button>
-                        <button 
-                          className="delete-button"
-                          onClick={() => handleDeleteRow(row.id)}
-                        >
-                          <img src="/src/static/close.png" alt="Delete" />
-                        </button>
+                        {isBattleStarted && (
+                          <button 
+                            className="reroll-button"
+                            onClick={() => handleReroll(row)}
+                          >
+                            <img src="/src/static/reroll.png" alt="Reroll" />
+                          </button>
+                        )}
+                        {!isBattleStarted && (
+                          <button 
+                            className="delete-button"
+                            onClick={() => handleDeleteRow(row.id)}
+                          >
+                            <img src="/src/static/close.png" alt="Delete" />
+                          </button>
+                        )}
                       </div>
                     )}
                   </td>
@@ -416,6 +444,7 @@ function App() {
             <button 
               className="roll-button"
               onClick={handleRoll}
+              disabled={isBattleStarted || rows.every(row => row.color === rows[0].color)}
             >
               <img src="/src/static/battle.png" alt="Battle" />
               Battle!

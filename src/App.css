@@ -117,7 +117,7 @@ button:hover {
   object-fit: contain;
 }
 
-.add-row-button {
+.add-dice-button {
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
@@ -131,17 +131,17 @@ button:hover {
   gap: 8px;
 }
 
-.add-row-button img {
+.add-dice-button img {
   width: 24px;
   height: 24px;
   object-fit: contain;
 }
 
-.add-row-button:hover {
+.add-dice-button:hover {
   opacity: 0.9;
 }
 
-.add-row-button:disabled {
+.add-dice-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -168,8 +168,13 @@ button:hover {
   font-weight: 700;
 }
 
-.roll-button:hover {
+.roll-button:hover:not(:disabled) {
   background-color: #b91c1c;
+}
+
+.roll-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .roll-button img {
@@ -459,7 +464,7 @@ td:first-child {
   min-width: 3rem;
 }
 
-tr:not(.reroll-row) .roll-result-cell {
+tr:not(.rerolled-row) .roll-result-cell {
   font-weight: bold;
 }
 
