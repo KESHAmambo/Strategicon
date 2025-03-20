@@ -251,7 +251,7 @@ function App() {
                   >
                     <div className="dice-image-container">
                       <img
-                        src={`/src/static/${type}.png`}
+                        src={`/Strategicon/src/static/${type}.png`}
                         alt={type}
                         className="dice-image"
                       />
@@ -268,7 +268,7 @@ function App() {
             </div>
             <div className="slider-container">
               <label>
-                <img src="/src/static/unit_size.png" alt="Unit Size" className="slider-icon" />
+                <img src="/Strategicon/src/static/unit_size.png" alt="Unit Size" className="slider-icon" />
                 Unit Size
               </label>
               <div className="range-input-container">
@@ -297,7 +297,7 @@ function App() {
             </div>
             <div className="slider-container">
               <label>
-                <img src="/src/static/bonus.png" alt="Bonus" className="slider-icon" />
+                <img src="/Strategicon/src/static/bonus.png" alt="Bonus" className="slider-icon" />
                 Bonus
               </label>
               <div className="range-input-container">
@@ -333,7 +333,7 @@ function App() {
               style={{ backgroundColor: selectedColor || '#d1d5db' }}
             >
               <img 
-                src={isBattleStarted || rows.length === 0 ? "/src/static/new_battle.png" : "/src/static/join.png"} 
+                src={isBattleStarted || rows.length === 0 ? "/Strategicon/src/static/new_battle.png" : "/Strategicon/src/static/join.png"} 
                 alt={isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"} 
               />
               {isBattleStarted || rows.length === 0 ? "New Battle" : "Add Dice"}
@@ -364,7 +364,7 @@ function App() {
                     ) : (
                       <div className="dice-image-container">
                         <img 
-                          src={`/src/static/${row.diceType}.png`} 
+                          src={`/Strategicon/src/static/${row.diceType}.png`} 
                           alt={row.diceType}
                           className="table-dice-image"
                         />
@@ -409,7 +409,7 @@ function App() {
                             className="reroll-button"
                             onClick={() => handleReroll(row)}
                           >
-                            <img src="/src/static/reroll.png" alt="Reroll" />
+                            <img src="/Strategicon/src/static/reroll.png" alt="Reroll" />
                           </button>
                         )}
                         {!isBattleStarted && (
@@ -417,7 +417,7 @@ function App() {
                             className="delete-button"
                             onClick={() => handleDeleteRow(row.id)}
                           >
-                            <img src="/src/static/close.png" alt="Delete" />
+                            <img src="/Strategicon/src/static/close.png" alt="Delete" />
                           </button>
                         )}
                       </div>
@@ -436,7 +436,7 @@ function App() {
               onClick={handleRoll}
               disabled={isBattleStarted || rows.every(row => row.color === rows[0].color)}
             >
-              <img src="/src/static/battle.png" alt="Battle" />
+              <img src="/Strategicon/src/static/battle.png" alt="Battle" />
               Battle!
             </button>
           </div>

@@ -65,7 +65,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
               className="add-player-button"
               onClick={handleAddPlayer}
             >
-              <img src="/src/static/user.png" alt="Add Player" />
+              <img src="/Strategicon/src/static/user.png" alt="Add Player" />
             </button>
           </div>
           <div className="color-pickers">
@@ -100,7 +100,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
           className="start-button"
           onClick={handleStart}
         >
-          <img src="/src/static/hexagon.png" alt="Start" />
+          <img src="/Strategicon/src/static/hexagon.png" alt="Start" />
           Start Strategicon!
         </button>
       </div>

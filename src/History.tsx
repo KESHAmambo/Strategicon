@@ -16,7 +16,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
   return (
     <div className="battle-history">
       <h2 className='history-title'>
-        <img src="/src/static/scroll.png" alt="History" className="slider-icon scroll-icon" />
+        <img src="/Strategicon/src/static/scroll.png" alt="History" className="slider-icon scroll-icon" />
         Battle History
       </h2>
       {history.map((entry) => (
@@ -45,7 +45,7 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
                     ) : (
                       <div className="dice-image-container">
                         <img 
-                          src={`/src/static/${row.diceType}.png`} 
+                          src={`/Strategicon/src/static/${row.diceType}.png`} 
                           alt={row.diceType}
                           className="table-dice-image"
                         />
