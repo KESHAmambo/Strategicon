@@ -62,7 +62,6 @@ function App() {
           diceType: newRow.diceType,
           unitSize: newRow.unitSize,
           bonus: newRow.bonus,
-          damage: 0,
           color: selectedColor,
         },
       ]);
@@ -147,6 +146,48 @@ function App() {
       diceType: type,
       unitSize: averageValue
     }));
+  };
+
+  const handleReroll = (row: DamageRow) => {
+    const diceMax = parseInt(row.diceType.substring(1));
+    const roll = Math.floor(Math.random() * diceMax) + 1;
+    const rawTotal = roll + row.bonus;
+    
+    // Handle bonus overflow and underflow
+    let totalRoll = rawTotal;
+    let bonusOverflow = 0;
+    
+    if (rawTotal > diceMax) {
+      totalRoll = diceMax;
+      bonusOverflow = rawTotal - diceMax;
+    } else if (rawTotal < 1) {
+      totalRoll = 1;
+      bonusOverflow = rawTotal - 1;
+    }
+
+    const baseDamage = Math.floor(
+      row.unitSize * (1 + (totalRoll - diceMax) / (totalRoll + diceMax - 2 + row.unitSize/2))
+    );
+
+    const damageWithBonus = baseDamage + bonusOverflow;
+
+    let maxDamage = row.unitSize;
+    if (row.diceType === 'd6') {
+      maxDamage = row.unitSize + 1;
+    } else if (row.diceType === 'd8' || row.diceType === 'd10') {
+      maxDamage = row.unitSize + 2;
+    } else if (row.diceType === 'd12' || row.diceType === 'd20') {
+      maxDamage = row.unitSize + 3;
+    }
+
+    const damage = Math.max(0, Math.min(damageWithBonus, maxDamage));
+
+    setRows(rows.map(r => 
+      r.id === row.id 
+        ? { ...r, rollResult: roll, damage }
+        : r
+    ));
+    setLastRollTime(new Date().toLocaleString());
   };
 
   if (!isGameStarted) {
@@ -312,21 +353,29 @@ function App() {
                   </td>
                   <td 
                     className="roll-result-cell"
-                    style={row.damage !== undefined ? {
+                    style={row.damage !== undefined && row.rollResult ? {
                       '--intensity-color': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'ff' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 255).toString(16).padStart(2, '0')}`,
                       '--intensity-color-dark': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'cc' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 200).toString(16).padStart(2, '0')}`
                     } as React.CSSProperties : undefined}
                     data-value={row.damage}
                   >
-                    {row.damage === 0 ? '0' : row.damage || '-'}
+                    {row.rollResult ? (row.damage === 0 ? '0' : row.damage) : '-'}
                   </td>
                   <td>
-                    <button 
-                      className="delete-button"
-                      onClick={() => handleDeleteRow(row.id)}
-                    >
-                      <img src="/src/static/close.png" alt="Delete" />
-                    </button>
+                    <div className="action-buttons">
+                      <button 
+                        className="reroll-button"
+                        onClick={() => handleReroll(row)}
+                      >
+                        <img src="/src/static/reroll.png" alt="Reroll" />
+                      </button>
+                      <button 
+                        className="delete-button"
+                        onClick={() => handleDeleteRow(row.id)}
+                      >
+                        <img src="/src/static/close.png" alt="Delete" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

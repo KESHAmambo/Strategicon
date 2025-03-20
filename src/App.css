@@ -101,10 +101,14 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s;
+  border-radius: 4px;
 }
 
 .delete-button:hover {
-  opacity: 0.8;
+  opacity: 1;
+  background-color: #f38686;
 }
 
 .delete-button img {
@@ -524,4 +528,34 @@ td:first-child {
   width: 24px;
   height: 24px;
   object-fit: contain;
+}
+
+.reroll-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.reroll-button:hover {
+  opacity: 1;
+  background-color: #f38686;
+}
+
+.reroll-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
 } 
