@@ -18,13 +18,11 @@ function App() {
   };
 
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [isPlayerJoined, setIsPlayerJoined] = useState(false);
   const [isBattleStarted, setIsBattleStarted] = useState(false);
   const [battleTime, setBattleTime] = useState<string | null>(null);
   const [playerColors, setPlayerColors] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [rows, setRows] = useState<DamageRow[]>([]);
-  const [lastRollTime, setLastRollTime] = useState<string | null>(null);
   const [newRow, setNewRow] = useState<Partial<DamageRow>>(() => {
     const initialDiceType = 'd6' as DiceType;
     const maxValue = diceMaxValues[initialDiceType];
@@ -209,14 +207,6 @@ function App() {
     // Find the index of the current row
     const rowIndex = rows.findIndex(r => r.id === row.id);
     
-    // Find the index of the first reroll row after the current row
-    const firstRerollIndex = rows.findIndex((r, index) => 
-      index > rowIndex && !r.isReroll
-    );
-
-    // If no non-reroll row is found after the current row, append to the end
-    const insertIndex = firstRerollIndex === -1 ? rows.length : firstRerollIndex;
-
     setRows(prevRows => {
       const newRows = [...prevRows];
       // Replace the current row with updated values
