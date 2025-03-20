@@ -305,18 +305,18 @@ function App() {
               <div className="range-input-container">
                 <div className="range-ticks">
                   {Array.from(
-                    { length: 21 }, // -10 to 10
-                    (_, i) => i - 10
+                    { length: 17 }, // -10 to 10
+                    (_, i) => i - 5
                   ).map((value) => (
-                    <div key={value} className="range-tick" style={{ left: `${(value + 10) / 20 * 100}%` }}>
+                    <div key={value} className="range-tick" style={{ left: `${(value + 5) / 16 * 100}%` }}>
                       <span className="range-tick-label">{value}</span>
                     </div>
                   ))}
                 </div>
                 <input
                   type="range"
-                  min="-10"
-                  max="10"
+                  min="-5"
+                  max="11"
                   value={newRow.bonus}
                   onChange={(e) =>
                     setNewRow({ ...newRow, bonus: Number(e.target.value) })
