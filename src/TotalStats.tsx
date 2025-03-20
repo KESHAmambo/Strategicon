@@ -59,7 +59,7 @@ export const TotalStats: React.FC<TotalStatsProps> = ({ history, playerColors })
 
   // Function to check if a value is the best
   const isBestValue = (value: number, statKey: keyof Omit<PlayerStats, 'color'>): boolean => {
-    return value === getBestValue(statKey);
+    return value !== 0 && value === getBestValue(statKey);
   };
 
   // Function to get the best average size
@@ -72,7 +72,7 @@ export const TotalStats: React.FC<TotalStatsProps> = ({ history, playerColors })
   // Function to check if average size is the best
   const isBestAvgSize = (units: number, totalSize: number): boolean => {
     const avgSize = units > 0 ? Math.round(totalSize / units) : 0;
-    return avgSize === getBestAvgSize();
+    return avgSize !== 0 && avgSize === getBestAvgSize();
   };
 
   return (
