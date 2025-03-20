@@ -450,8 +450,17 @@ td:first-child {
 }
 
 .roll-result-cell {
+  font-weight: normal;
+  text-align: center;
+  padding: 0.5rem;
   background-color: var(--intensity-color);
-  font-weight: 700;
+  transition: all 0.2s ease;
+  position: relative;
+  min-width: 3rem;
+}
+
+tr:not(.reroll-row) .roll-result-cell {
+  font-weight: bold;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -570,4 +579,17 @@ table .dice-overlay {
   font-weight: 600;
   color: #374151;
   margin-top: 1rem;
+}
+
+.empty-dice-image {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+}
+
+.reroll-time {
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #666;
+  text-align: center;
 } 

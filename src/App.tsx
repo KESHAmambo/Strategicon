@@ -162,20 +162,48 @@ function App() {
 
     const damage = Math.max(0, Math.min(damageWithBonus, maxDamage));
 
-    const updatedRow = { ...row, rollResult: roll, damage };
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
 
-    // Add single row reroll to history
-    setBattleHistory(prev => [{
-      date: `${new Date().toLocaleString()} (Reroll)`,
-      rows: [updatedRow]
-    }, ...prev]);
+    // Create a new row with the old values
+    const oldRow = {
+      ...row,
+      id: `${row.id}-${Date.now()}`,
+      isReroll: true,
+      rerollTime: timeString
+    };
 
-    setRows(rows.map(r => 
-      r.id === row.id 
-        ? updatedRow
-        : r
-    ));
-    setLastRollTime(new Date().toLocaleString());
+    // Update the current row with new values
+    const updatedRow = {
+      ...row,
+      rollResult: roll,
+      damage
+    };
+
+    // Find the index of the current row
+    const rowIndex = rows.findIndex(r => r.id === row.id);
+    
+    // Find the index of the first reroll row after the current row
+    const firstRerollIndex = rows.findIndex((r, index) => 
+      index > rowIndex && !r.isReroll
+    );
+
+    // If no non-reroll row is found after the current row, append to the end
+    const insertIndex = firstRerollIndex === -1 ? rows.length : firstRerollIndex;
+
+    setRows(prevRows => {
+      const newRows = [...prevRows];
+      // Replace the current row with updated values
+      newRows[rowIndex] = updatedRow;
+      // Insert the old row right after the current row (at the beginning of reroll group)
+      newRows.splice(rowIndex + 1, 0, oldRow);
+      return newRows;
+    });
   };
 
   if (!isGameStarted) {
@@ -313,22 +341,28 @@ function App() {
             </thead>
             <tbody>
               {rows.map(row => (
-                <tr key={row.id}>
+                <tr key={row.id} className={row.isReroll ? 'reroll-row' : ''}>
                   <td>
-                    <div className="dice-image-container">
-                      <img 
-                        src={`/src/static/${row.diceType}.png`} 
-                        alt={row.diceType}
-                        className="table-dice-image"
-                      />
-                      <div 
-                        className="dice-overlay"
-                        style={{ backgroundColor: row.color }}
-                      />
-                    </div>
+                    {row.isReroll ? (
+                      <div className="dice-image-container">
+                        <div className="empty-dice-image" />
+                      </div>
+                    ) : (
+                      <div className="dice-image-container">
+                        <img 
+                          src={`/src/static/${row.diceType}.png`} 
+                          alt={row.diceType}
+                          className="table-dice-image"
+                        />
+                        <div 
+                          className="dice-overlay"
+                          style={{ backgroundColor: row.color }}
+                        />
+                      </div>
+                    )}
                   </td>
-                  <td>{row.unitSize}</td>
-                  <td>{row.bonus}</td>
+                  <td>{row.isReroll ? '' : row.unitSize}</td>
+                  <td>{row.isReroll ? '' : row.bonus}</td>
                   <td 
                     className="roll-result-cell"
                     style={row.rollResult ? {
@@ -350,20 +384,26 @@ function App() {
                     {row.rollResult ? (row.damage === 0 ? '0' : row.damage) : '-'}
                   </td>
                   <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="reroll-button"
-                        onClick={() => handleReroll(row)}
-                      >
-                        <img src="/src/static/reroll.png" alt="Reroll" />
-                      </button>
-                      <button 
-                        className="delete-button"
-                        onClick={() => handleDeleteRow(row.id)}
-                      >
-                        <img src="/src/static/close.png" alt="Delete" />
-                      </button>
-                    </div>
+                    {row.isReroll ? (
+                      <div className="reroll-time">
+                        {row.rerollTime}
+                      </div>
+                    ) : (
+                      <div className="action-buttons">
+                        <button 
+                          className="reroll-button"
+                          onClick={() => handleReroll(row)}
+                        >
+                          <img src="/src/static/reroll.png" alt="Reroll" />
+                        </button>
+                        <button 
+                          className="delete-button"
+                          onClick={() => handleDeleteRow(row.id)}
+                        >
+                          <img src="/src/static/close.png" alt="Delete" />
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

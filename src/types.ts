@@ -6,6 +6,8 @@ export interface DamageRow {
   rollResult?: number;
   damage?: number;
   color: string;
+  isReroll?: boolean;
+  rerollTime?: string;
 }
 
 export interface HistoryEntry {

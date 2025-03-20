@@ -1,15 +1,13 @@
 import React from 'react';
-import { DamageRow } from './types';
-
-interface HistoryEntry {
-  date: string;
-  rows: DamageRow[];
-}
+import { DamageRow, HistoryEntry } from './types';
 
 interface HistoryProps {
   history: HistoryEntry[];
   diceMaxValues: Record<string, number>;
 }
+
+const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'] as const;
+type DiceType = typeof diceTypes[number];
 
 export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
   if (history.length === 0) return null;
@@ -34,39 +32,47 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
             </thead>
             <tbody>
               {entry.rows.map(row => (
-                <tr key={`${entry.date}-${row.id}`}>
+                <tr key={row.id}>
                   <td>
-                    <div className="dice-image-container">
-                      <img 
-                        src={`/src/static/${row.diceType}.png`} 
-                        alt={row.diceType}
-                        className="table-dice-image"
-                      />
-                      <div 
-                        className="dice-overlay"
-                        style={{ backgroundColor: row.color }}
-                      />
-                    </div>
+                    {row.isReroll ? (
+                      <div className="dice-image-container">
+                        <div className="empty-dice-image" />
+                      </div>
+                    ) : (
+                      <div className="dice-image-container">
+                        <img 
+                          src={`/src/static/${row.diceType}.png`} 
+                          alt={row.diceType}
+                          className="table-dice-image"
+                        />
+                        <div 
+                          className="dice-overlay"
+                          style={{ backgroundColor: row.color }}
+                        />
+                      </div>
+                    )}
                   </td>
                   <td>{row.unitSize}</td>
-                  <td>{row.bonus >= 0 ? `+${row.bonus}` : row.bonus}</td>
+                  <td>{row.bonus}</td>
                   <td 
                     className="roll-result-cell"
-                    style={{
-                      '--intensity-color': `${row.color}${Math.floor((row.rollResult! / diceMaxValues[row.diceType]) * 255).toString(16).padStart(2, '0')}`,
-                      '--intensity-color-dark': `${row.color}${Math.floor((row.rollResult! / diceMaxValues[row.diceType]) * 200).toString(16).padStart(2, '0')}`
-                    } as React.CSSProperties}
+                    style={row.rollResult ? {
+                      '--intensity-color': `${row.color}${Math.floor((row.rollResult / diceMaxValues[row.diceType as DiceType]) * 255).toString(16).padStart(2, '0')}`,
+                      '--intensity-color-dark': `${row.color}${Math.floor((row.rollResult / diceMaxValues[row.diceType as DiceType]) * 200).toString(16).padStart(2, '0')}`
+                    } as React.CSSProperties : undefined}
+                    data-value={row.rollResult}
                   >
-                    {row.rollResult}
+                    {row.rollResult || '-'}
                   </td>
                   <td 
                     className="roll-result-cell"
-                    style={{
-                      '--intensity-color': `${row.color}${row.damage! > diceMaxValues[row.diceType] ? 'ff' : Math.floor((row.damage! / diceMaxValues[row.diceType]) * 255).toString(16).padStart(2, '0')}`,
-                      '--intensity-color-dark': `${row.color}${row.damage! > diceMaxValues[row.diceType] ? 'cc' : Math.floor((row.damage! / diceMaxValues[row.diceType]) * 200).toString(16).padStart(2, '0')}`
-                    } as React.CSSProperties}
+                    style={row.damage !== undefined && row.rollResult ? {
+                      '--intensity-color': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'ff' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 255).toString(16).padStart(2, '0')}`,
+                      '--intensity-color-dark': `${row.color}${row.damage > diceMaxValues[row.diceType as DiceType] ? 'cc' : Math.floor((row.damage / diceMaxValues[row.diceType as DiceType]) * 200).toString(16).padStart(2, '0')}`
+                    } as React.CSSProperties : undefined}
+                    data-value={row.damage}
                   >
-                    {row.damage}
+                    {row.rollResult ? (row.damage === 0 ? '0' : row.damage) : '-'}
                   </td>
                 </tr>
               ))}
