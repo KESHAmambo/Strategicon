@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './History.css';
 import { HistoryEntry } from './types';
 import { images } from './assets';
 
 interface HistoryProps {
   history: HistoryEntry[];
-  diceMaxValues: Record<string, number>;
+  diceMaxValues: Record<DiceType, number>;
+  onDeleteEntry: (index: number) => void;
 }
 
 const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'] as const;
 type DiceType = typeof diceTypes[number];
 
-export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
+export const History: React.FC<HistoryProps> = ({ history, diceMaxValues, onDeleteEntry }) => {
+  const [deleteConfirmIndex, setDeleteConfirmIndex] = useState<number | null>(null);
+
+  const handleDeleteClick = (index: number) => {
+    setDeleteConfirmIndex(index);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirmIndex !== null) {
+      onDeleteEntry(deleteConfirmIndex);
+      setDeleteConfirmIndex(null);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmIndex(null);
+  };
+
   if (history.length === 0) return null;
 
   return (
@@ -20,11 +38,19 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
         <img src={images.scroll} alt="History" className="slider-icon scroll-icon" />
         Battle History
       </h2>
-      {history.map((entry) => (
+      {history.map((entry, index) => (
         <div key={entry.date} className="history-entry">
-          <div className="history-entry-date">
-            {entry.date}
-          </div>
+          <div className="history-header">
+              <div className="history-entry-date">
+                {entry.date}
+              </div>
+              <button 
+                className="delete-button"
+                onClick={() => handleDeleteClick(index)}
+              >
+                <img src={images.close} alt="Delete" className="delete-icon" />
+              </button>
+            </div>
           <table>
             <thead>
               <tr>
@@ -85,6 +111,23 @@ export const History: React.FC<HistoryProps> = ({ history, diceMaxValues }) => {
           </table>
         </div>
       ))}
+
+      {deleteConfirmIndex !== null && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Delete History Entry</h3>
+            <p>Are you sure you want to delete this history entry?</p>
+            <div className="modal-buttons">
+              <button className="cancel-button" onClick={handleDeleteCancel}>
+                Cancel
+              </button>
+              <button className="confirm-button" onClick={handleDeleteConfirm}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }; 

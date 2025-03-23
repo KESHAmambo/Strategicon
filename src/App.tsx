@@ -219,6 +219,10 @@ function App() {
     });
   };
 
+  const handleDeleteHistoryEntry = (index: number) => {
+    setBattleHistory(prev => prev.filter((_, i) => i !== index));
+  };
+
   if (!isGameStarted) {
     return <StartScreen onStart={handleStart} />;
   }
@@ -444,7 +448,7 @@ function App() {
           </div>
         )}
 
-        <History history={battleHistory} diceMaxValues={diceMaxValues} />
+        <History history={battleHistory} diceMaxValues={diceMaxValues} onDeleteEntry={handleDeleteHistoryEntry} />
         <TotalStats history={battleHistory} playerColors={playerColors} />
       </div>
     </div>

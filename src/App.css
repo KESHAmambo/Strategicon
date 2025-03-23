@@ -585,13 +585,6 @@ table .dice-overlay {
   justify-content: center;
 }
 
-.history-entry-date {
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  color: #374151;
-  margin-top: 1rem;
-}
-
 .empty-dice-image {
   width: 32px;
   height: 32px;
