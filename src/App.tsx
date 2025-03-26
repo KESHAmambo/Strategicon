@@ -37,6 +37,20 @@ function App() {
   });
   const [battleHistory, setBattleHistory] = useState<HistoryEntry[]>([]);
 
+  // Add beforeunload event handler
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isGameStarted) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isGameStarted]);
+
   // Set first color as selected when playerColors changes
   useEffect(() => {
     if (playerColors.length > 0 && !selectedColor) {
