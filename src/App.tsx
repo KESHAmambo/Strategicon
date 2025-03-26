@@ -440,7 +440,7 @@ function App() {
             <button 
               className="roll-button"
               onClick={handleRoll}
-              disabled={isBattleStarted || rows.every(row => row.color === rows[0].color)}
+              disabled={isBattleStarted || (rows.every(row => row.color === rows[0].color) && rows.some(row => row.diceType !== 'd4'))}
             >
               <img src={images.battle} alt="Battle" />
               Battle!
